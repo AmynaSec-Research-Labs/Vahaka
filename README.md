@@ -28,7 +28,7 @@ VAHAKA is designed to replicate the key electronic and communication features of
 -   Weather Status
 
 ---
-## 🛠️ Installation
+## 📥 Installation
 ### Prerequisites : 
 To successfully install and run Vahaka on your Linux system, you need to have :
 - NodeJS (at-least version 22.13.1)
