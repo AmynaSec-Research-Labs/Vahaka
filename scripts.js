@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const body = document.body;
 
+    let powerOnTimeoutId = null;
+
     let maxSpeed = 200;
     let speedGlobal = 0;
     let batteryGlobal = 100;
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
             standShake();
         } else {
             if (modeVal == 'eco') {
-                modeCircle.style.backgroundColor = 'red';
+                modeCircle.src = 'img/power_mode.png';
                 document.querySelector('.clustering').style.background = 'radial-gradient(circle, #600b04, black)';
                 modeText.textContent = 'Power Mode';
                 circle2MaxEco.style.display = 'none';
@@ -114,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 sendCANMessage(window['drivingModeARID'], 'P');
             } else {
-                modeCircle.style.backgroundColor = 'green';
+                modeCircle.src = 'img/eco_mode.png';
                 document.querySelector('.clustering').style.background = 'radial-gradient(circle, #008000, black)';
                 modeText.textContent = 'Eco Mode';
                 circle2MaxEco.style.display = 'block';
@@ -149,11 +151,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function toggleEngine() {
         if (engineVal == true) {
             engineCircle.src = 'img/engine_off.png';
-            engineText.textContent = 'Engine OFF';
+            engineText.textContent = 'Engine OFF';11
             engineVal = false;
             document.getElementById("scooter").src = 'img/scooter_os.png'
             ecuImage.src = 'img/ecu.png';
             sendCANMessage(window['engineValARID'], 'F');
+
+            powerOffHMI();
         } else {
             if (standVal == true) {
                 standShake();
@@ -169,6 +173,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     document.getElementById("scooter").src = 'img/scooter_ps.png'
                 }
+
+                powerOnHMI();
             }
         }
     }
@@ -201,6 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
             cruiseVal = false;
             sendCANMessage(window['cruiseValARID'], 'M');
             stopIncrease();
+
+            powerOffHMI();
         }
     }
 
@@ -299,25 +307,21 @@ document.addEventListener('DOMContentLoaded', function () {
         let dataStr;
 
         if (type === 'int') {
-            console.log(data);
             dataStr = (data).toString(16).toUpperCase();
             dataStr = dataStr.padStart(Math.ceil(dataStr.length / 2) * 2, '0');
-            console.log(dataStr);
 
         }
         else {
-            
+
             dataStr = Array.from(data)
                 .map(char => char.charCodeAt(0).toString(16).padStart(2, '0'))
                 .join('');
         }
 
         socket.emit('sendCANMessage', { id, data: dataStr });
-        console.log(`Sent CAN message: ${id}, ${data}`);
     }
 
     function increaseValue() {
-        console.log(standVal, engineVal);
         if (standVal == false && engineVal == true) {
             const video = document.getElementById("video");
             if (circle2Value == 0) {
@@ -494,6 +498,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     else {
                         document.getElementById("scooter").src = 'img/scooter_ps.png'
                     }
+
+                    powerOnHMI();
                 }
             }
             else {
@@ -573,6 +579,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 engineVal = false;
                 document.getElementById("scooter").src = 'img/scooter_os.png'
                 ecuImage.src = 'img/ecu.png';
+
+                powerOffHMI();
             } else {
                 if (standVal == true) {
                     standShake();
@@ -588,6 +596,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     else {
                         document.getElementById("scooter").src = 'img/scooter_ps.png'
                     }
+
+                    powerOnHMI();
                 }
             }
         }
@@ -620,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             document.getElementById("scooter").src = 'img/scooter_pm.gif'
                         }
                     }
-                    modeCircle.style.backgroundColor = 'red';
+                    modeCircle.src = 'img/power_mode.png';
 
                     document.querySelector('.clustering').style.background = 'radial-gradient(circle, #600b04, black)';
                     modeText.textContent = 'Power Mode';
@@ -642,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
 
-                    modeCircle.style.backgroundColor = 'green';
+                    modeCircle.src = 'img/eco_mode.png';
 
                     document.querySelector('.clustering').style.background = 'radial-gradient(circle, #008000, black)';
                     modeText.textContent = 'Eco Mode';
@@ -672,7 +682,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 stopIncrease();
                 decreaseValue();
 
-
                 engineCircle.src = 'img/engine_off.png';
                 engineText.textContent = 'Engine OFF';
 
@@ -682,6 +691,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 cruiseVal = false;
                 sendCANMessage(window['cruiseValARID'], 'M');
                 stopIncrease();
+
+                powerOffHMI();
             }
         } else if (event.key.toLowerCase() === 'r') {
             if (standVal == true) {
@@ -780,7 +791,6 @@ document.addEventListener('DOMContentLoaded', function () {
     socket.on('canMessage', handleCANMessage);
 
     function handleCANMessage(message) {
-        console.log('Received CAN message:', message);
 
         let data = message.data;
 
@@ -790,13 +800,13 @@ document.addEventListener('DOMContentLoaded', function () {
             case window['speedValARID']:
                 updateSpeedReceive(data);
                 break;
-            case window['batteryValARID']: 
+            case window['batteryValARID']:
                 updateBatteryReceive(data);
                 break;
-            case window['weatherValARID']: 
+            case window['weatherValARID']:
                 updateTemperature(data);
                 break;
-            case window['weatherInfoARID']: 
+            case window['weatherInfoARID']:
                 updateWeatherCondition(data);
                 break;
             case window['indicatorValARID']:
@@ -821,7 +831,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateCruise(data);
                 break;
             default:
-                console.log('Unknown CAN message ID:', stringID);
+                break;
         }
     }
 
@@ -834,7 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function assignIDs() {
 
         const doRandom = sessionStorage.getItem('randomize');
-        
+
         if (doRandom == 'true') {
             variables.forEach((variableName) => {
                 let randomValue;
@@ -849,9 +859,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             idsAssigned = true;
-            variables.forEach((variableName) => {
-                console.log(`Value of ${variableName} = ${window[variableName]}`);
-            });
 
         } else {
             let fixedValues = [
@@ -867,9 +874,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             idsAssigned = true;
-            variables.forEach((variableName) => {
-                console.log(`Value of ${variableName} = ${window[variableName]}`);
-            });
 
         }
     }
@@ -877,10 +881,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateSpeedReceive(data) {
         const speed = parseInt(data, 16) - 300;
 
-        console.log(speed);
-
         if (speed >= 0 && speed < 301) {
-            console.log('Speed edited.');
             circle2Value = speed;
             speedGlobal = speed;
             circle2.textContent = `${speed} KM/H`;
@@ -909,14 +910,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateBatteryReceive(data) {
         const battery = parseInt(data, 16) - 285;
-        console.log(data, battery);
 
         if (!isNaN(battery) && battery >= 0 && battery <= 100) {
             circle1Value = battery;
             batteryGlobal = battery;
             circle1.textContent = `${Math.max(0, battery)}%`;
 
-           
+
             let hue = (battery * 120 / 100);
             circle1Border.style.borderColor = `hsl(${hue}, 100%, 50%)`;
         }
@@ -987,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function () {
             standShake();
         } else {
             if (data === '50') {
-                modeCircle.style.backgroundColor = 'red';
+                modeCircle.src = 'img/power_mode.png';
                 document.querySelector('.clustering').style.background = 'radial-gradient(circle, #600b04, black)';
                 modeText.textContent = 'Power Mode';
                 circle2MaxEco.style.display = 'none';
@@ -1006,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             } else if (data === '45') {
-                modeCircle.style.backgroundColor = 'green';
+                modeCircle.src = 'img/eco_mode.png';
                 document.querySelector('.clustering').style.background = 'radial-gradient(circle, #008000, black)';
                 modeText.textContent = 'Eco Mode';
                 circle2MaxEco.style.display = 'block';
@@ -1029,7 +1029,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateStorage(data) {
-        console.log(data);
         if (data === '55') {
             storageCircle.src = 'img/seat_unlock.png';
             storageText.textContent = 'Seat UNLCK';
@@ -1042,6 +1041,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateEngine(data) {
+        
+        // Just an extra check component added to make sure that the HMI is really OFF if engine is off (due to the high volume of fuzzing messages) )
+        if (engineVal == false) {
+            powerOffHMI();
+        }
+
         if (standVal == true) {
             standShake();
         } else {
@@ -1051,6 +1056,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 engineVal = false;
                 document.getElementById("scooter").src = 'img/scooter_os.png'
                 ecuImage.src = 'img/ecu.png';
+
+                powerOffHMI();
             } else if (data === '4e') {
                 engineCircle.src = 'img/engine_on.png';
                 engineText.textContent = 'Engine ON';
@@ -1062,6 +1069,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     document.getElementById("scooter").src = 'img/scooter_ps.png'
                 }
+
+                powerOnHMI();
             }
         }
     }
@@ -1093,6 +1102,8 @@ document.addEventListener('DOMContentLoaded', function () {
             cruiseVal = false;
             sendCANMessage(window['cruiseValARID'], 'M');
             stopIncrease();
+
+            powerOffHMI();
         }
     }
     function updateCruise(data) {
@@ -1184,7 +1195,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    setInterval(updateCANBusy, 100);
+    function powerOnHMI() {
+        const anim0 = document.getElementById("clusterAnim0");
+        const anim1 = document.getElementById("clusterAnim1");
+        
+        void anim1.offsetWidth;
+        anim1.classList.add("fade-in");
 
-    console.log('CAN message handler initialized');
+        powerOnTimeoutId = setTimeout(() => {
+            anim0.style.display = "none";
+            anim1.style.display = "none";
+            anim1.classList.remove("fade-in");
+            powerOnTimeoutId = null;
+        }, 2000);
+    }
+    
+    function powerOffHMI() {
+        const anim0 = document.getElementById("clusterAnim0");
+        const anim1 = document.getElementById("clusterAnim1");
+
+        if (powerOnTimeoutId !== null) {
+            clearTimeout(powerOnTimeoutId);
+            powerOnTimeoutId = null;
+        }
+        
+        anim0.style.display = "block";
+        anim1.style.opacity = '0';
+        anim1.style.display = "block";
+        anim1.classList.remove("fade-in");
+    }
+
+    setInterval(updateCANBusy, 100);
 });

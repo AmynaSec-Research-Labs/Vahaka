@@ -522,8 +522,6 @@ body {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: green;
-  transition: background-color 0.3s;
 }
 
 .controls_area {
@@ -588,4 +586,16 @@ body {
   top: -5px;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  25% {opacity: 0.25;}
+  50% {opacity: 0.5;}
+  75% {opacity: 0.75;}
+  100% {opacity: 1;}
 }

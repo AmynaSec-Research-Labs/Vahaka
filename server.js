@@ -73,7 +73,6 @@ function initializeCANChannel() {
             const data = msg.data.toString('hex');
             io.emit('canMessage', { id: id, data: data });
             totalPacketCount += 1;
-            process.stdout.write(`Packet count : ${totalPacketCount}\r`);
         });
         channel.start();
         console.log('CAN channel initialized successfully');
@@ -99,7 +98,6 @@ io.on('connection', (socket) => {
                 data: Buffer.from(data.data, 'hex')
             };
             totalPacketCount += 1;
-            process.stdout.write(`Packet count : ${totalPacketCount}\r`);
             if (channel) {
                 channel.send(message);
             } else {
