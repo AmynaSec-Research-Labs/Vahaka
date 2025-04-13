@@ -27,6 +27,40 @@ VAHAKA is designed to replicate the key electronic and communication features of
 -   Left, Right and Dual Indicators
 -   Weather Status
 
+---
+## 🛠️ Installation
+### Prerequisites : 
+To successfully install and run Vahaka on your Linux system, you need to have :
+- NodeJS (at-least version 22.13.1)
+- NPM (at-least version 11.1.0)
+Note :
+- If your system does not have NodeJS installed, the installation script attempts to install the latest version of Node on your system, but if your system already has a lower, unsupported version of Node - the installation script will NOT try to update it (since it can affect your other projects). In this case, you will have to manually update Node and NPM.
+- Vahaka might run on Node versions earlier to the mentioned minimums, but this is not guaranteed.
+### Method 1 - Using Installation Script
+*(Creates a symlink)*
+- Run this command in your Linux terminal : 
+```bash
+curl -sL https://raw.githubusercontent.com/AmynaSec-Research-Labs/Vahaka/refs/heads/main/install.sh | bash
+```
+- Once installation is successful, start Vahaka from anywhere using the command 
+```bash
+vahaka
+```
+
+### Method 2 - Cloning the Repo
+*(Creates no symlink, but you need to be in the Vahaka directory to run)*
+- Clone the repository at your desired location :
+```bash
+git clone https://github.com/AmynaSec-Research-Labs/Vahaka.git
+```
+*(Or download and extract the .ZIP file)*
+- Start Vahaka by entering into the directory and running :
+```bash
+node server.js
+```
+
+---
+
 ## 🚀 Roadmap
 
 This is the **first version** of VAHAKA, and it will continue to evolve. Future releases will include:
