@@ -54,7 +54,11 @@ vahaka
 git clone https://github.com/AmynaSec-Research-Labs/Vahaka.git
 ```
 *(Or download and extract the .ZIP file)*
-- Start Vahaka by entering into the directory and running :
+- Install the prerequisites (in the Vahaka directory) :
+```
+npm install
+```
+- Start Vahaka server by running :
 ```bash
 node server.js
 ```
