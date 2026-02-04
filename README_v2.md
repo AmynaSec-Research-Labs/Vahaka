@@ -143,7 +143,6 @@ Dashboard → Socket.io → CAN Bus → BLE Update → Mobile App
 - **Device Name**: "VAHAKA-REAL"
 - **Service UUID**: `12345678-1234-5678-1234-56789abcdef0`
 - **Engine Characteristic**: `12345678-1234-5678-1234-56789abcdef1`
-- **Commands**: `0x01` (ON), `0x02` (OFF)
 
 ---
 
@@ -196,22 +195,6 @@ We will soon be releasing a series of **attack scenario demonstration videos** o
 -   [Smit Verma](https://github.com/smitverma)
 -   [Pallavi Gore](https://github.com/gorepallavi)
 
-We welcome contributions from the community. Please feel free to submit pull requests, report issues, or suggest new features, enhancements and tools.
-
-### Development Guidelines
-- Follow existing code style
-- Test BLE functionality before submitting
-- Update documentation for new features
-- Ensure CAN protocol compatibility
-- Add appropriate security considerations
-
-### How to Contribute
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
 ----------
 
 ## 📞 Contact & Support
@@ -229,15 +212,6 @@ This tool is designed for **educational and research purposes only**. Users are 
 ---
 
 _Developed by [Amynasec Labs](https://amynasec.io) for security professionals and researchers._
-
----
-📢 Version Information
-
-This is **Vahaka Version 2.0** with BLE engine control and enhanced CAN integration. Future updates will be released accordingly.
-
-## 🏷️ License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
